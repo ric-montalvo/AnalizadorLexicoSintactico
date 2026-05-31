@@ -1,0 +1,25 @@
+<inicio> -> programa id <sentencias> finprograma
+<sentencias> -> <sent> <sentf>
+<sentf> -> <sent> <sentf>
+<sentf> -> E
+<sent> -> <tipo> <listaid> ;
+<sent> -> id = <expresion> ;
+<sent> -> leer ( <listaid> );
+<sent> -> escribir ( <expresion> );
+<listaid> -> id <listaf>
+<listaf> -> , id <listaf>
+<listaf> -> E
+<expresión> -> <expr> <exprf>
+<exprf> -> <oper> <expr> <exprf>
+<exprf> -> E
+<expr> -> id
+<expr> -> litbinaria
+<expr> -> litoctal
+<expr> -> lithexa
+<tipo> -> binario
+<tipo> -> octal
+<tipo> -> hexad
+<oper> -> +
+<oper> -> -
+<oper> -> /
+<oper> -> *
