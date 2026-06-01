@@ -9,7 +9,7 @@
 <listaid> -> id <listaf>
 <listaf> -> , id <listaf>
 <listaf> -> E
-<expresión> -> <expr> <exprf>
+<expresion> -> <expr> <exprf>
 <exprf> -> <oper> <expr> <exprf>
 <exprf> -> E
 <expr> -> id
