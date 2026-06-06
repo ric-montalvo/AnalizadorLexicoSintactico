@@ -33,7 +33,7 @@ public class Main {
             }
             
             System.out.println("\n IMPRESION DE ESTRUCTURAS");
-            System.out.println("--- Símbolos No Terminales ---");
+            System.out.println("--- Simbolos No Terminales ---");
             for (int i = 0; i < parser.search.nonTerminalSymbols.size(); i++) { 
                 System.out.println(parser.search.nonTerminalSymbols.get(i));
             }
