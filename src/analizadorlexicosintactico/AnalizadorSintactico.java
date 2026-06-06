@@ -90,13 +90,14 @@ class AnalizadorSintactico {
                     String getSize = derivation.ritghtProduction.get(number - 1);
 
                     // Impresión detallada para la corrida paso a paso solicitada en el reporte
-                    System.out.print("Token actual: " + tokenOriginal.lexema + " \t| Tope pila: " + x + " \t| Regla usada: " + produccionCompleta);
+                    imprimirTrazaPasoAPaso(tokenOriginal, x, produccionCompleta, stackAnalyzer, lexer);
+                    stackAnalyzer.pop();
+                    
                     if (tokenOriginal.categoria.equals("Identificador")) {
                         System.out.print(" \t[Tabla de Símbolos Actualizada]");
                     }
                     System.out.println();
 
-                    stackAnalyzer.pop();
 
                     // Si la regla de producción genera un vacío, no agregamos elementos
                     if (!getSize.equals("E")) {
@@ -129,6 +130,8 @@ class AnalizadorSintactico {
             } else {
                 // Validación cuando x es un Símbolo Terminal
                 if (x.equals(a)) {
+                    imprimirTrazaPasoAPaso(tokenOriginal, x, "[Match directo - Consumo de Token]", stackAnalyzer, lexer);
+                    
                     System.out.println("Match alcanzado: " + x + " | Acción: Consumo de entrada (Pop)");
                     stackAnalyzer.pop();
                     
@@ -165,5 +168,20 @@ class AnalizadorSintactico {
             return "lithexa";
         }
         return t.lexema;
+    }
+    
+    private void imprimirTrazaPasoAPaso(Token tokenActual, String topePila, String produccion, Stack<String> pila, AnalizadorLexico lexer) {
+        
+        System.out.print("Token: " + tokenActual.lexema + " \t| Pila: [" + pila.obtenerContenidoPila() + "] \t| Regla: " + produccion);
+        
+        // Si el token es un ID, imprimimos la tabla de símbolos en vivo
+        if (tokenActual.categoria.equals("Identificador")) {
+            System.out.println("\n   ---> [TABLA DE SÍMBOLOS ACTUALIZADA]:");
+            for (int s = 0; s < lexer.tablaSimbolos.size(); s++) {
+                System.out.println("        - " + lexer.tablaSimbolos.get(s).lexema);
+            }
+        } else {
+            System.out.println(); // Salto de línea normal
+        }
     }
 }

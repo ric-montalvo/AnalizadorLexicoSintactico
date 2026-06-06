@@ -46,4 +46,18 @@ public class Stack<T> {
         }
         return top.data; 
     }
+    
+    // Método agregado para cumplir el punto 5 (Imprimir contenido de la pila)
+    public String obtenerContenidoPila() {
+        if (empty()) {
+            return "Vacía";
+        }
+        String resultado = "";
+        Symbol<T> temporal = top;
+        while (temporal != null) {
+            resultado = temporal.data + " " + resultado;
+            temporal = temporal.next;
+        }
+        return resultado;
+    }
 }
