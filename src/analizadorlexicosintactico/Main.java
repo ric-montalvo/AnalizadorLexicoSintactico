@@ -1,45 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package analizadorlexicosintactico;
 
-/*
-SALVADOR TABOADA RMIREZ
-RICARDO ANTONIO MUÑOZ MONTALVO
-main
-*/
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
-    public static void main(String[] args) {     
-        writeGrammatic read = new writeGrammatic();
-        rightSide rightSide = new rightSide();
-        noTemrianlSymbolList noTerminal = new noTemrianlSymbolList();
-        TemrinalSymbols terminal = new TemrinalSymbols();
-        read.writeAll(); 
-        System.out.println("=============================================================");
-        System.out.println("-----------------Gramatica-----------------");
-        for (int i = 0; i < read.grammatic.size(); i++) {
-            System.out.println(read.grammatic.get(i));
+    public static void main(String[] args) {
+        String rutaArchivo = "programa.txt"; 
+        
+        try {
+            // Leer el programa del usuario con codificación UTF-8
+            String codigoFuente = new String(Files.readAllBytes(Paths.get(rutaArchivo)), StandardCharsets.UTF_8);
+            System.out.println("=== COMPILADOR LÉXICO - SINTÁCTICO ===");
+            System.out.println("Procesando código fuente desde: " + rutaArchivo + "\n");
+            
+            if (codigoFuente == null || codigoFuente.trim().isEmpty()) {
+                System.out.println("El archivo programa.txt no contiene líneas de código.");
+                return;
+            }
+           
+            // Instanciar el analizador léxico en modo de transmisión a demanda
+            AnalizadorLexico lexer = new AnalizadorLexico(codigoFuente);
+            
+            // Instanciar el motor sintáctico predictivo LL(1)
+            AnalizadorSintactico parser = new AnalizadorSintactico();
+            
+            // Iniciar el procesamiento LIDriver
+            parser.sintacticAnalyzer(lexer);
+            
+            // Impresión final de las estructuras autorizadas por el reporte del PDF
+            System.out.println("\n=== TABLA DE PALABRAS RESERVADAS ===");
+            for (int i = 0; i < lexer.tablaPalabrasReservadas.size(); i++) {
+                System.out.println(lexer.tablaPalabrasReservadas.get(i).toString());
+            }
+            
+            System.out.println("\n=== TABLA DE SÍMBOLOS FINALES (IDENTIFICADORES ÚNICOS) ===");
+            for (int i = 0; i < lexer.tablaSimbolos.size(); i++) {
+                System.out.println(lexer.tablaSimbolos.get(i).toString());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Ocurrió una excepción durante el análisis del compilador.");
+            System.out.println("Mensaje detallado: " + e.getMessage());
         }
-        System.out.println("=============================================================");
-        rightSide.rightProductionWritter(read.grammatic);
-        System.out.println("-----------------Lado derecho de la gramatica-----------------");
-        for (int i = 0; i < rightSide.ritghtProduction.size(); i++) {
-            System.out.println(rightSide.ritghtProduction.get(i));
-        }
-        System.out.println("=============================================================");
-        noTerminal.nonTerminalSymbol(read.grammatic);
-        System.out.println("-----------------No terminales-----------------");
-        for (int i = 0; i < noTerminal.nonTerminalSymbols.size(); i++) { 
-            System.out.println(noTerminal.nonTerminalSymbols.get(i));
-        }
-        System.out.println("=============================================================");
-        terminal.TerminalSymbol(read.grammatic);
-        System.out.println("-----------------Terminales-----------------");
-        for (int i = 0; i < terminal.terminalSymbols.size(); i++) {
-            System.out.println(terminal.terminalSymbols.get(i));
-        }
-        System.out.println("=============================================================");
     }
 }
