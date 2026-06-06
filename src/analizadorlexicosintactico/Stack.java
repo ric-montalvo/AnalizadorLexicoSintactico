@@ -55,8 +55,8 @@ public class Stack<T> {
         String resultado = "";
         Symbol<T> temporal = top;
         while (temporal != null) {
-            resultado = temporal.data + " " + resultado;
-            temporal = temporal.next;
+        resultado = temporal.data + " " + resultado;
+        temporal = temporal.next;
         }
         return resultado;
     }

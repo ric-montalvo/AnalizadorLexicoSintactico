@@ -27,17 +27,17 @@ public class Main {
             parser.searchTermianl.TerminalSymbol(parser.grammatic.grammatic);
             
             System.out.println("=============================================================");
-            System.out.println("2. IMPRESIÓN DE LA GRAMÁTICA");
+            System.out.println(" IMPRESION DE LA GRAMATICA");
             for (int i = 0; i < parser.grammatic.grammatic.size(); i++) {
                 System.out.println(parser.grammatic.grammatic.get(i));
             }
             
-            System.out.println("\n3. IMPRESIÓN DE ESTRUCTURAS");
+            System.out.println("\n IMPRESION DE ESTRUCTURAS");
             System.out.println("--- Símbolos No Terminales ---");
             for (int i = 0; i < parser.search.nonTerminalSymbols.size(); i++) { 
                 System.out.println(parser.search.nonTerminalSymbols.get(i));
             }
-            System.out.println("--- Símbolos Terminales ---");
+            System.out.println("--- Simbolos Terminales ---");
             for (int i = 0; i < parser.searchTermianl.terminalSymbols.size(); i++) {
                 System.out.println(parser.searchTermianl.terminalSymbols.get(i));
             }
@@ -46,13 +46,12 @@ public class Main {
                 System.out.println(parser.derivation.ritghtProduction.get(i));
             }
             
-            // Cumpliendo el PUNTO 4 del PDF
             System.out.println("=============================================================");
-            System.out.println("4. PROGRAMA A ANALIZAR (Código Fuente):");
+            System.out.println(" PROGRAMA A ANALIZAR:");
             System.out.println(codigoFuente);
             System.out.println("=============================================================");
 
-            // Instanciar el analizador léxico en modo de transmisión a demanda
+            // Instanciar el analizador léxico
             AnalizadorLexico lexer = new AnalizadorLexico(codigoFuente);
             
             // Iniciar el procesamiento LIDriver (PUNTO 5 del PDF)

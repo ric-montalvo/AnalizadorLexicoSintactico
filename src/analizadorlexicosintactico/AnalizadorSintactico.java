@@ -43,7 +43,7 @@ class AnalizadorSintactico {
         Token tokenOriginal = lexer.obtenerSiguienteToken();
         String a = traducirToken(tokenOriginal);
 
-        System.out.println("\n=== INICIANDO TRAZA DEL ANÁLISIS SINTÁCTICO (LIDriver) ===");
+        System.out.println("\n=== INICIANDO TRAZA DEL ANALISIS SINTACTICO (LIDriver) ===");
 
         while (!stackAnalyzer.empty()) {
             // Tope de la pila actualizado paso a paso
@@ -51,7 +51,7 @@ class AnalizadorSintactico {
 
             // Condición de aceptación exitosa completa
             if (x.equals("$") && a.equals("EOF")) {
-                System.out.println("\n>> ANÁLISIS EXITOSO: La estructura de este programa es totalmente válida.");
+                System.out.println("\n>> ANALISIS EXITOSO: La estructura de este programa es totalmente valida.");
                 stackAnalyzer.pop();
                 break;
             }
@@ -93,10 +93,10 @@ class AnalizadorSintactico {
                     imprimirTrazaPasoAPaso(tokenOriginal, x, produccionCompleta, stackAnalyzer, lexer);
                     stackAnalyzer.pop();
                     
-                    if (tokenOriginal.categoria.equals("Identificador")) {
+                    /*if (tokenOriginal.categoria.equals("Identificador")) {
                         System.out.print(" \t[Tabla de Símbolos Actualizada]");
                     }
-                    System.out.println();
+                    System.out.println();*/
 
 
                     // Si la regla de producción genera un vacío, no agregamos elementos
@@ -132,7 +132,7 @@ class AnalizadorSintactico {
                 if (x.equals(a)) {
                     imprimirTrazaPasoAPaso(tokenOriginal, x, "[Match directo - Consumo de Token]", stackAnalyzer, lexer);
                     
-                    System.out.println("Match alcanzado: " + x + " | Acción: Consumo de entrada (Pop)");
+                    System.out.println("Match alcanzado: " + x + " | Accion: Consumo de entrada (Pop)");
                     stackAnalyzer.pop();
                     
                     if (!x.equals("$")) {
@@ -176,12 +176,13 @@ class AnalizadorSintactico {
         
         // Si el token es un ID, imprimimos la tabla de símbolos en vivo
         if (tokenActual.categoria.equals("Identificador")) {
-            System.out.println("\n   ---> [TABLA DE SÍMBOLOS ACTUALIZADA]:");
+            System.out.println("\n   ---> [TABLA DE SIMBOLOS ACTUALIZADA]:");
             for (int s = 0; s < lexer.tablaSimbolos.size(); s++) {
                 System.out.println("        - " + lexer.tablaSimbolos.get(s).lexema);
             }
         } else {
             System.out.println(); // Salto de línea normal
         }
+        System.out.println("-----------------------------------------------------------------------------------------");
     }
 }
