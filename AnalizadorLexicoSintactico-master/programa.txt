@@ -1,0 +1,4 @@
+programa miprog
+binario val ;
+val = 10B ;
+finprograma
