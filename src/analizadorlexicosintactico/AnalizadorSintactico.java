@@ -8,7 +8,6 @@ class AnalizadorSintactico {
     writeGrammatic grammatic = new writeGrammatic();
     rightSide derivation = new rightSide();
 
-    // La matriz predictiva estática de Salva queda intacta
     public int matrizPredicitva[][] = {
         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,2,0,0,0,2,0,0,2,0,0,0,0,2,2,2,0,0,0,0},
@@ -22,13 +21,11 @@ class AnalizadorSintactico {
         {0,0,0,0,0,0,0,0,0,0,0,0,0,19,20,21,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,22,23,25,24}
     };
-
-    // Mapeo estricto para asegurar que coincidan las posiciones con la matriz de Salva
+    
     private String[] filasNoTerminales = {"<inicio>", "<sentencias>", "<sentf>", "<sent>", "<listaid>", "<listaf>", "<expresion>", "<exprf>", "<expr>", "<tipo>", "<oper>"};
     private String[] columnasTerminales = {"programa", "id", "finprograma", ";", "=", "leer", "(", ")", "escribir", ",", "litbinaria", "litoctal", "lithexa", "binario", "octal", "hexad", "+", "-", "*", "/"};
-
+    
     public void sintacticAnalyzer(AnalizadorLexico lexer) {
-        // Cargar las estructuras base de la gramática antes de iniciar
         grammatic.writeAll();
         derivation.rightProductionWritter(grammatic.grammatic);
         search.nonTerminalSymbol(grammatic.grammatic);
@@ -36,22 +33,20 @@ class AnalizadorSintactico {
 
         Stack<String> stackAnalyzer = new Stack<>();
         
-        // El algoritmo del LIDriver requiere colocar el fondo de pila y el símbolo inicial
-        stackAnalyzer.push("$");
-        stackAnalyzer.push(filasNoTerminales[0]); // Pone <inicio> en el tope
+        stackAnalyzer.push("$");//fondo de la pila
+        stackAnalyzer.push(search.nonTerminalSymbols.get(0));//<inicio> en el tope
 
         Token tokenOriginal = lexer.obtenerSiguienteToken();
         String a = traducirToken(tokenOriginal);
 
-        System.out.println("\n=== INICIANDO TRAZA DEL ANALISIS SINTACTICO (LIDriver) ===");
+        System.out.println("\n===Inicio del algoritmo===");
 
         while (!stackAnalyzer.empty()) {
-            // Tope de la pila actualizado paso a paso
             String x = stackAnalyzer.peek();
 
-            // Condición de aceptación exitosa completa
+            //se acepto y termina
             if (x.equals("$") && a.equals("EOF")) {
-                System.out.println("\n>> ANALISIS EXITOSO: La estructura de este programa es totalmente valida.");
+                System.out.println("\nLa estructura de este programa es totalmente valida.");
                 stackAnalyzer.pop();
                 break;
             }
@@ -60,8 +55,8 @@ class AnalizadorSintactico {
             int index = -1;
             int indexTerminal = -1;
 
-            // Identificar si x es No Terminal usando el arreglo estricto
-            for (int i = 0; i < filasNoTerminales.length; i++) {
+            //det si x es NO TERMINAL y de paso ver su coordenada
+            for (int i = 0; i < search.nonTerminalSymbols.size(); i++) {
                 if (filasNoTerminales[i].equals(x)) {
                     isnotTermianl = true;
                     index = i;
@@ -69,8 +64,8 @@ class AnalizadorSintactico {
                 }
             }
 
-            // Identificar la columna del terminal de entrada
-            for (int i = 0; i < columnasTerminales.length; i++) {
+            //identificar la columna del terminal de entrada y tmabien ver la coordenada
+            for (int i = 0; i < searchTermianl.terminalSymbols.size(); i++) {
                 if (columnasTerminales[i].equals(a)) {
                     indexTerminal = i;
                     break;
@@ -79,7 +74,7 @@ class AnalizadorSintactico {
 
             if (isnotTermianl == true) {
                 if (indexTerminal == -1) {
-                    System.err.println("\nError de sintaxis: Token actual fuera de alfabeto gramatical -> " + a);
+                    System.err.println("\nError de sintaxis: Token actual fuera de alfabeto gramatical: " + a);
                     break;
                 }
 
@@ -89,21 +84,14 @@ class AnalizadorSintactico {
                     String produccionCompleta = grammatic.grammatic.get(number - 1);
                     String getSize = derivation.ritghtProduction.get(number - 1);
 
-                    // Impresión detallada para la corrida paso a paso solicitada en el reporte
                     imprimirTrazaPasoAPaso(tokenOriginal, x, produccionCompleta, stackAnalyzer, lexer);
                     stackAnalyzer.pop();
                     
-                    /*if (tokenOriginal.categoria.equals("Identificador")) {
-                        System.out.print(" \t[Tabla de Símbolos Actualizada]");
-                    }
-                    System.out.println();*/
-
-
-                    // Si la regla de producción genera un vacío, no agregamos elementos
+                    //no agrgear el vacio
                     if (!getSize.equals("E")) {
                         String word = "";
                         ArrayList<String> tempWord = new ArrayList<>();
-
+                        //en la lista viene toda la cadena, sustituto del split, ir 1 en 1
                         for (int i = 0; i < getSize.length(); i++) {
                             if (getSize.charAt(i) == ' ') {
                                 if (!word.isEmpty()) {
@@ -114,25 +102,24 @@ class AnalizadorSintactico {
                                 word = word + getSize.charAt(i);
                             }
                         }
-                        if (!word.isEmpty()) {
+                        if (!word.isEmpty()) {//checkpoint para ver q se vacio ttodo
                             tempWord.add(word);
                         }
 
-                        // Inserción inversa en la pila
+                        //pila alreves
                         for (int i = tempWord.size() - 1; i >= 0; i--) {
                             stackAnalyzer.push(tempWord.get(i));
                         }
                     }
                 } else {
-                    System.err.println("\nError de sintaxis: Casilla vacía en matriz para [" + x + ", " + a + "]");
+                    System.err.println("\nError de sintaxis: hay 0 en la matriz en " + x + " y " + a);
                     break;
                 }
             } else {
-                // Validación cuando x es un Símbolo Terminal
+                //x es un Símbolo Terminal
                 if (x.equals(a)) {
-                    imprimirTrazaPasoAPaso(tokenOriginal, x, "[Match directo - Consumo de Token]", stackAnalyzer, lexer);
+                    imprimirTrazaPasoAPaso(tokenOriginal, x, "Match", stackAnalyzer, lexer);
                     
-                    System.out.println("Match alcanzado: " + x + " | Accion: Consumo de entrada (Pop)");
                     stackAnalyzer.pop();
                     
                     if (!x.equals("$")) {
@@ -140,14 +127,14 @@ class AnalizadorSintactico {
                         a = traducirToken(tokenOriginal);
                     }
                 } else {
-                    System.err.println("\nError de sintaxis: Se esperaba el componente '" + x + "' pero se leyó '" + a + "'");
+                    System.err.println("\nError de sintaxis: esperaba " + x + " pero se llego " + a + "");
                     break;
                 }
             }
         }
     }
 
-    // Traduce las clasificaciones genéricas del léxico a los terminales de la matriz
+    //traduce para la matriz, lo toma como NO TERMINAL
     private String traducirToken(Token t) {
         if (t.lexema.equals("EOF")) {
             return "EOF";
@@ -172,17 +159,24 @@ class AnalizadorSintactico {
     
     private void imprimirTrazaPasoAPaso(Token tokenActual, String topePila, String produccion, Stack<String> pila, AnalizadorLexico lexer) {
         
-        System.out.print("Token: " + tokenActual.lexema + " \t| Pila: [" + pila.obtenerContenidoPila() + "] \t| Regla: " + produccion);
+        System.out.println("Token actual: " + tokenActual.lexema);
+        System.out.println("Contenido de la pila: [ " + pila.obtenerContenidoPila() + "]");
         
-        // Si el token es un ID, imprimimos la tabla de símbolos en vivo
-        if (tokenActual.categoria.equals("Identificador")) {
-            System.out.println("\n   ---> [TABLA DE SIMBOLOS ACTUALIZADA]:");
-            for (int s = 0; s < lexer.tablaSimbolos.size(); s++) {
-                System.out.println("        - " + lexer.tablaSimbolos.get(s).lexema);
+        if (produccion.equals("Match")) {
+            System.out.println("Produccion a usar / Accion: Match (Se elimina '" + topePila + "')");
+            
+            // Si el token es un ID, imprimimos la tabla de símbolos
+            if (tokenActual.categoria.equals("Identificador")) {
+                System.out.println("-> [Tabla de Simbolos]:");
+                for (int s = 0; s < lexer.tablaSimbolos.size(); s++) {
+                    System.out.println("    - " + lexer.tablaSimbolos.get(s).lexema);
+                }
             }
-        } else {
-            System.out.println(); // Salto de línea normal
+        } 
+        else {
+            System.out.println("Produccion a usar / Accion: " + produccion);
         }
-        System.out.println("-----------------------------------------------------------------------------------------");
+        
+        System.out.println("------------------------------------------------------------------");
     }
 }
